@@ -13,9 +13,22 @@
 }
 
 
-<div id="calendar">
+<div class="row">
+    <div class="col-md-2">
+        <div id="otherEvents">
+            <p><strong>Sürüklenebilir Etkinlikler</strong></p>
+            <div class="fc-event" id="isValid">1. Etkinlik</div><br />
+            <div class="fc-event" id="isNotValid">2. Etkinlik</div><br />
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div id="calendar">
 
+        </div>
+    </div>
 </div>
+
+
 
 
 
@@ -32,6 +45,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+            var draggableEl = document.getElementById('otherEvents');
+
+            var Draggable = FullCalendarInteraction.Draggable;
+            new Draggable(draggableEl, {
+                itemSelector: '.fc-event',
+                eventData: function (eventEl) {
+                    return {
+                        title: eventEl.innerText,
+                        duration: '01:30'
+                    };
+                }
+            });
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: ['interaction','dayGrid', 'timeGrid', 'list', 'bootstrap'],
@@ -109,8 +134,8 @@
                             var newEvent = {
                                 id: 'a',
                                 title: 'New Event',
-                                start: '2023-05-08T15:00:00.000Z',
-                                end: '2023-05-08T15:30:00.000Z'
+                                start: '2020-04-04T15:00:00.000Z',
+                                end: '2020-04-04T15:30:00.000Z'
                             }
 
                             calendar.addEvent(newEvent);
@@ -131,25 +156,30 @@
                 //displayEventTime: true,
                 //displayEventEnd : false,
                 // eventOrder : 'title', //start, -duration, allDay, title, [], function
+                //defaultDate : '2020-05-04',
+                //validRange: {
+                //    start : '2020-03-20'
+                //},
                 timeZone : 'UTC',
                 events: [
                     {
                         id: 'x',
                         title: 'Merhaba',
-                        start: '2023-05-08T08:00:00.000Z',
-                        end: '2023-05-08T10:30:00.000Z'
+                        start: '2020-04-04T08:00:00.000Z',
+                        end: '2020-04-04T10:30:00.000Z'
                     },
                     {
                         id: 'y',
                         title: 'A Merhaba Y',
-                        start: '2023-05-08T13:00:00.000Z',
-                        end: '2023-05-08T15:30:00.000Z'
+                        start: '2020-04-04T13:00:00.000Z',
+                        end: '2020-04-04T15:30:00.000Z'
                     }
                 ],
                 //eventRender: function (info) {
                 //    console.log(info.event.title); // event, el, isMirror
                 //},
                 selectable: true,
+                droppable : true,
                 select: function (selectionInfo) {
                     console.log(selectionInfo);
                 },
@@ -203,7 +233,17 @@
                     console.log('Resize edildi.');
                     //
                     //eventResizeInfo.revert();
-                }
+                },
+                drop: function (dropInfo) {
+                    console.log('drop edildi.');  //allDay, date, dateStr, draggedEl
+                },
+                eventReceive: function (info) {
+                    console.log('Recieve methodu tetiklendi.');  //draggedEl, event
+                },
+                eventLeave: function (info) {
+                    console.log('Leave edildi.');  //Takvimler arasında olaylar sürüklendiğinde çalışır
+                },
+                dropAccept : '#isValid'
 
 
 
